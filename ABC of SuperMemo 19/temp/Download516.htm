@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+<title>SuperMemo 比传统笔记强在哪 · SuperMemo 渐进学习大型指北 · 看云</title>
+    <meta name="description"
+          content="用渐进学习的方式建立我们大脑的概念网络"/>
+    <meta name="keywords"
+          content="SuperMemo,学习,教程,抽认卡,间隔重复,遗忘曲线,认知,Anki,阅读"/>
+            <meta name="viewport"
+                  content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+                  data-react-helmet="true" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                                <style data-react-helmet="true">
+        .dimmer {
+            box-sizing: content-box;
+            display: flex;
+            position: absolute;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            vertical-align: middle;
+            padding: 0;
+            background-color: #FFFFFF;
+            opacity: 1;
+            line-height: 1;
+            animation-fill-mode: both;
+            animation-duration: .5s;
+            transition: background-color .5s linear;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            will-change: opacity;
+            z-index: 1000;
+        }
+
+        .loader {
+            box-sizing: content-box;
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: 0;
+            text-align: center;
+            z-index: 1000;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        .loader:before {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            margin: 0 0 0 -25px;
+            border-radius: 50px;
+            border: 4px solid rgba(0, 0, 0, .1);
+        }
+
+        .loader:after {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            margin: 0 0 0 -25px;
+            animation: loader .6s linear;
+            animation-iteration-count: infinite;
+            border-radius: 50px;
+            border: 4px solid transparent;
+            border-top-color: #767676;
+            box-shadow: 0 0 0 1px transparent;
+        }
+
+        @keyframes loader {
+            from {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #main {
+            display: block !important;
+            height: 100vh;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <style>
+  .wwads-horizontal,
+  .wwads-vertical {
+    background-color: #f4f8fa;
+    padding: 5px;
+    min-height: 120px;
+    margin-top: 20px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    font-family: sans-serif;
+    display: flex;
+    min-width: 150px;
+    position: relative;
+    overflow: hidden;
+  }
+  .wwads-horizontal {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .wwads-vertical {
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 32px;
+  }
+  .wwads-horizontal a,
+  .wwads-vertical a {
+    text-decoration: none;
+  }
+  .wwads-horizontal .wwads-content,
+  .wwads-horizontal .wwads-img,
+  .wwads-vertical .wwads-content,
+  .wwads-vertical .wwads-img {
+    margin: 5px;
+  }
+  .wwads-horizontal .wwads-content {
+    flex: 130px;
+    text-align: left;
+  }
+  .wwads-vertical .wwads-content {
+    margin-top: 10px;
+    text-align: left;
+  }
+  .wwads-content .wwads-text,
+  .wwads-horizontal .wwads-text {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #0e1011;
+    -webkit-font-smoothing: antialiased;
+    word-break: break-word;
+    font-family: "BlinkMacSystemFont","Segoe UI", "Microsoft Jhenghei", "Microsoft Yahei", arial, sans-serif;
+  }
+  .wwads-content strong,.wwads-content b {
+    padding: 1px 1px;
+    border-bottom: 2px solid #ec515b;
+    color:#202124;
+    font-family: "BlinkMacSystemFont","Segoe UI", "Microsoft Jhenghei", "Microsoft Yahei", arial, sans-serif;
+  }
+  .wwads-horizontal .wwads-poweredby,
+  .wwads-vertical .wwads-poweredby {
+    display: flex;
+    align-items: center;
+    margin-top: 1em;
+  }
+  .wwads-vertical .wwads-poweredby {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .wwads-horizontal .wwads-poweredby .wwads-logo,
+  .wwads-vertical .wwads-poweredby .wwads-logo {
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 130 130' xmlns='http://www.w3.org/2000/svg' xml:space='preserve' version='1.1'%3E%3Cpath d='m130,60.8c-1.2,-18.7 -10.3,-35.3 -24.1,-46.4c-11.1,-9 -25.3,-14.4 -40.8,-14.4c-0.6,0 -1.1,0 -1.6,0c-3.3,0.1 -6.6,0.4 -9.8,1c-30.5,5.4 -53.7,32 -53.7,64c0,1.9 0.1,3.7 0.2,5.6c2.5,29.5 24.7,53.4 53.4,58.5c2.4,0.4 4.8,0.7 7.3,0.9c0.8,0 1.7,0.1 2.5,0.1c0.5,0 1.1,0 1.6,0c34,0 62,-26.2 64.8,-59.5c0.2,-1.8 0.2,-3.7 0.2,-5.6c0.1,-1.4 0.1,-2.8 0,-4.2zm-97.6,9.8c3.7,7.7 11.5,13 20.6,13c0.3,0 0.5,0 0.8,0l0,9.8c-0.3,0 -0.5,0 -0.8,0c-14.6,0 -26.9,-9.6 -31,-22.8c-1,-3.1 -1.5,-6.4 -1.5,-9.8c0,-18 14.6,-32.5 32.5,-32.5c0.3,0 0.5,0 0.8,0c3.4,0.1 6.7,0.7 9.8,1.7c6.5,2.2 12.1,6.5 16,11.9c2,2.8 3.5,5.9 4.6,9.2c0.9,3 1.4,6.2 1.4,9.6l-9.8,0c0,-2.2 -0.3,-4.3 -0.9,-6.3c-0.9,-3.2 -2.5,-6.2 -4.7,-8.6c-1.9,-2.1 -4.1,-3.9 -6.6,-5.2c-2.9,-1.5 -6.2,-2.5 -9.8,-2.6c-0.3,0 -0.5,0 -0.8,0c-12.6,0 -22.8,10.2 -22.8,22.8c0,3.5 0.8,6.8 2.2,9.8zm78.1,0c-0.2,1.7 -0.5,3.3 -1,4.8c-3.4,10.5 -13.2,18.1 -24.8,18.1c-3.1,0 -6.1,-0.5 -8.9,-1.6c-2.2,-0.8 -4.2,-1.9 -6.1,-3.2c-2.4,-1.7 -4.5,-3.8 -6.2,-6.1c-0.3,-0.4 -0.5,-0.8 -0.8,-1.2c-2,-3.2 -3.4,-6.9 -3.9,-10.8l9.9,0c0.3,1.7 0.9,3.3 1.7,4.8c1.6,2.9 4.1,5.3 7.1,6.7c0.6,0.3 1.2,0.5 1.8,0.7c1.7,0.6 3.5,0.9 5.4,0.9c7.9,0 14.5,-5.7 16,-13.2c0.2,-1 0.3,-2 0.3,-3.1c0,-2.4 -0.5,-4.6 -1.4,-6.7c-1.7,-3.7 -4.7,-6.7 -8.4,-8.3l3.5,-9.1c7.4,3.1 13.1,9.5 15.2,17.4c0.4,1.6 0.7,3.3 0.8,5.1c0,0.5 0.1,1 0.1,1.6c-0.1,1.1 -0.2,2.2 -0.3,3.2z' fill='%23a6b7bf' /%3E%3C/svg%3E%0A") no-repeat;
+    padding: 0 1px 11px 11px;
+  }
+  .wwads-horizontal .wwads-poweredby .wwads-logo-text,
+  .wwads-vertical .wwads-poweredby .wwads-logo-text {
+    font-size: 11px;
+    margin-left: 3px;
+    color: #a6b7bf;
+  }
+  .wwads-horizontal .wwads-hide,
+  .wwads-vertical .wwads-hide {
+    position: absolute;
+    right: -23px;
+    bottom: -23px;
+    width: 46px;
+    height: 46px;
+    border-radius: 23px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  .wwads-horizontal .wwads-hide .hide-svg,
+  .wwads-vertical .wwads-hide .hide-svg {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='7' fill='%23a6b7bf'%3E%3Cpath d='M.879.672L3 2.793 5.121.672a.5.5 0 11.707.707L3.708 3.5l2.12 2.121a.5.5 0 11-.707.707l-2.12-2.12-2.122 2.12a.5.5 0 11-.707-.707l2.121-2.12L.172 1.378A.5.5 0 01.879.672z'/%3E%3C/svg%3E") no-repeat;
+  }
+  .wwads-horizontal .wwads-hide:hover,
+  .wwads-vertical .wwads-hide:hover {
+    background: rgb(0 0 0/0.05);
+  }
+</style>
+<style>
+  #wwads {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    max-width: 180px;
+    z-index: 1001;
+    border:2px solid #ececec;
+  }
+  @media only screen and (min-width: 600px) and (max-width: 1600px) {
+    #wwads + #main .article-body,
+    #wwads + #main .article-navigation,
+    #wwads + #main .article-foot {
+      max-width: calc(100% - 190px);
+      margin-left: 0 !important;
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    #wwads {
+      bottom: 0;
+      right: 0;
+      left: 0;
+      font-size:large;
+      max-width: 100%;
+      margin-top: 0;
+      height: 120px;
+      padding-bottom: 0;
+      flex-direction: row;
+      align-items: center;
+    }
+    #wwads .wwads-content {
+      flex: 1;
+    }
+    #wwads .wwads-poweredby {
+      position: relative;
+      left: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+    }
+    #wwads + #main .sidebar {
+      bottom: 120px;
+    }
+  
+    #wwads + #main .article {
+      padding-bottom: 120px;
+    }
+  }
+</style>
+<div id="wwads" class="wwads-cn wwads-vertical">
+  
+                                            
+                                                                      <a href="https://chat.topthink.com/" class="wwads-img" target="_blank" rel="sponsored noopener" referrerpolicy="no-referrer-when-downgrade"><img src="/asset/app/images/thinkchat.png?version=1a7cbd87d3964e64c59f" width="145" /></a>
+        <div class="wwads-content">
+          <a href="https://chat.topthink.com/" class="wwads-text" target="_blank" rel="sponsored noopener" referrerpolicy="no-referrer-when-downgrade">ThinkChat2.0新版上线，更智能更精彩，支持会话、画图、视频、阅读、搜索等，送10W Token，即刻<b>开启你的AI之旅</b></a>
+          <a href="https://www.topthink.com/" title="由顶想云提供广告服务" class="wwads-poweredby" target="_blank"><img class="wwads-logo" /><span class="wwads-logo-text">广告</span></a>
+        </div>        
+                              
+  <a class="wwads-hide" onclick="parentNode.remove()" title="隐藏广告"><svg class="hide-svg"></svg></a>
+</div>
+<div id="main">
+    <div class="seo">
+        <div class="content">
+                            # 为什么任何笔记系统在 SuperMemo 面前都是垃圾 (如 OneNote 和 Evernote)
+
+&gt; 译者：[叶峻峣![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.zhihu.com/people/L.M.Sherlock)
+&gt; 原文：[MasterHowToLearn - Why SuperMemo Trashes Any Note-taking System (Including OneNote and Evernote)![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.masterhowtolearn.com/2020-02-28-why-supermemo-trashes-any-note-taking-system-(including-onenote-and-evernote)/)
+
+太长不看版：
+
+OneNote/Evernote：单向交互：你可以查找和阅读信息(即你的笔记)，软件相当于本地搜索引擎, 可以用于整理索引信息
+
+SuperMemo：双向交互：信息找到你；你把信息转化成知识
+
+注意：如果对你而言，笔记系统的用途只是名为知识管理的笔记存储，那么这样比较并不公平。然而，如果你不止步于此，而且还希望能有助于学习(我认为应该是这样)，那么 SuperMemo 比任何笔记系统强得不在一个数量级上。请继续读下去。
+
+## 目录
+
+[TOC=2,4]
+
+## 任何笔记系统的预期用途 (摘要、高亮和重新阅读)
+
+参见另一个类似的讨论：[学习时不应该做笔记的 3 个重要原因![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.masterhowtolearn.com/2019-08-29-3-fatal-reasons-why-you-shouldnt-be-taking-notes-when-studying/)
+
+两种典型使用场景：
+
+你在读课程要求的书。你在 OneNote/Evernote 中写下提要。做完笔记后，你在考试前(下个星期或一个月)“频繁”重新阅读。
+
+另一场景：你为你读的每一本书做笔记。你有一个你这些年读过的所有书的笔记集合。你经常或“偶尔”回顾它们。
+
+*有什么问题吗？*
+
+## 任何笔记系统中的两个关键缺陷
+
+上述两种情景包含两个步骤：
+
+1.  创建笔记(通过总结和高亮)
+2.  复习笔记(通过重新阅读)
+
+### 1. 创建笔记
+
+请参阅下表。摘要和高亮是低效的。
+
+### 2. 复习笔记
+
+#### I. 重新阅读是低效的
+
+&gt; :-: ![](https://img.kancloud.cn/8d/3f/8d3fe8e7f14749e67ef143a23bfd0baf_720x315.jpg)
+&gt; 图片来源：[Improving Students’ Learning With Effective Learning Techniques![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.researchgate.net/publication/258180568_Improving_Students)
+
+#### II. 不可持续的复习计划
+
+从长远来看，“经常复习”是不可持续的。随着你的笔记越来越多，重读笔记的计划不可能持续。当然，大多数人没有意识到复习笔记的必要。即使他们有意识，在大多数情况下也“两到三次”(一年内吗？)。他们没有复习安排系统。
+
+例如，你的“图书笔记”集合中有 30 本书，你打算什么时候重新阅读每个读书笔记？如果你是一个专心致志的学习者，如果没有复习安排系统，你不得不手动跟踪所有的复习安排。也许你会提醒自己(通过一些日历通知)重新阅读你的读书笔记。因为“不定期复习”意味着不止一次，比如 3 次：30 本书 x 3 次=90 次日历事件。这相当于实现一个纸笔版[莱特纳系统![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://en.wikipedia.org/wiki/Leitner_system)：你怎么能维护 10,000 张纸质抽认卡？笔记越多，这项工作越繁重而难以企及。在大多数情况下，你所有的笔记一经创建便只是在积灰(数字灰尘)。
+
+在“[为什么 Obsidian 将超越 Roam![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.youtube.com/watch%3Fv%3D_x54XJrECvk)”(\[6:12\])视频中，他说：“Evernote 让我肆无忌惮地囤积内容，草率地收集别人的思考。”
+
+&gt; 同样的道理也适用于书签管理。我们偶然发现了一个有趣的网页，不想错过信息，所以我们留下书签。这一堆数字书签，和一堆感觉值得了解的论文，没什么不同。不过，在这里，保存的内容也没有被阅读。——[收藏家的谬论![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://zettelkasten.de/posts/collectors-fallacy/)
+
+[奥利·洛维尔![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.ollielovell.com/ollielearns/spaced-repetition-incremental-reading-anki-dendro/)是这样说的：
+
+&gt; 最初，我会在 Word 文档中做笔记，但我再也不重温它们了。然后我在谷歌文档中制作了它们，但我再也不会再次访问它们了。然后我在 Evernote 制作了它们，但我再也不会去看它们了。最近，我把笔记写成邮件发给自己。这个方法稍微好一点，但我仍然面对繁重琐碎的工作：重温我在某次会议中做的大量笔记，点进所有链接，并为有价值的部分制作 Anki 卡片(通常在记忆之前没有深入学习)。
+
+因此，通过摘要和高亮来创建笔记是无效的(#1)。通过重新阅读复习笔记也是无效的(#2.1)，同时也是不可维护，不可持续的(#2.2)。因此，任何笔记系统提供的价值都很小，而且大部分都是徒劳无功。在大多数情况下，任何笔记系统都只是这样：一堆有组织的笔记。
+
+## 任何笔记系统 vs SuperMemo
+
+1. 何时复习(手动 vs 自动)
+2. 交互程度(被动 vs 主动)
+3. 做笔记的目标(本身就是目的 vs 抽认卡的起点)
+
+### 1. 何时复习
+
+**安排复习时间：**
+
+**任何笔记系统：手动查找信息来复习。但这带来了元判断的问题：**
+
+&gt; 你怎么知道什么时候应该复习笔记呢？
+
+你不知道。我们不知道什么是我们不知道的，什么是我们需要知道的。格温的《[有效学习的间隔重复![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.gwern.net/Spaced-repetition)》一书精辟地描述了这一悖论：
+
+&gt; 我们很难知道什么时候应该复习——最好的时机是将忘未忘的时候。但这就是症结：如果你即将忘记它，你应该怎么记得要复习它呢？你只记得要复习你知道的内容，但你已经知道的内容又不需要复习！
+
+**SuperMemo：自动安排复习(分布练习)：基于[优先级队列![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.yuque.com/supermemo/wiki/priority_queue)和反馈给出所需信息的算法**
+
+分布练习意味着明确的复习安排：对于一份读书笔记，在之后的几周或几月内安排多次复习。分布练习只关心**何时**，而不是**如何**。换句话说，即使你没有任何“抽认卡-回忆”，没有主动回忆，SuperMemo 也会安排你的每个读书笔记在未来几周或几个月后重新阅读。这避免了上面的“不可持续的手动复习安排”问题。
+
+被动：有一个书签网站列表或一个似乎没完没了的阅读清单。
+
+主动：将它们导入到 SuperMemo 中，这样它们就可以在将来展示自己。
+
+**在任何笔记系统中，你都必须寻找信息。在 SuperMemo 中，信息会寻找你。**
+
+&gt; :-: ![](https://img.kancloud.cn/b8/5e/b85e42ca6bdf8fb0a84acb02573dca91_638x308.jpg)
+&gt; 我读了一篇一年前我导入 SuperMemo 的文章。
+
+### 2. 交互 (被动 vs 主动)
+
+**任何笔记系统：被动交互**
+
+正如我在上面的“任何笔记系统中的两个关键缺陷”中提到的：摘要不是被动的，而高亮和重新阅读是被动的。
+
+在笔记系统中，你不会主动维护你的信息。你不会用它进行主动回忆。大多数情况下，你不会重写、扩展、详述或修改内容，只有一摊静止的数字化笔记。
+
+**SuperMemo：主动交互**
+
+在 SuperMemo 中，你有一个待办的队列。 可以将其视为一条传送带：你会收到很多信息。 他们来找你。 对于每条信息，你都必须积极维护：
+
+对于摘录卡片(文章)\[渐进阅读\]:
+
+1.  通过点击 Next 忽略它(即，另一个时间再读)
+2.  删除它(不再需要)
+3.  阅读后决定：
+
+*   摘录重要信息
+*   如果你还没读完，设置阅读点(`Ctrl + F7`)
+
+对于问答卡片(抽认卡)：
+
+1.  回忆答案，并提供反馈评分：
+
+1.  回忆失败：(自动安排重试)
+2.  回忆成功：SuperMemo 将其安排在未来数周、数月或数年之后
+
+3.  重新措辞、精简、删除不必要的内容
+4.  删除它
+
+你有没有看到你与 SuperMemo 的交互比笔记系统多了多少？也许你可以在笔记系统中手动做这些，但这不是“标准实践的一部分”，关键的缺陷是缺乏复习安排系统。正如我在上面提到的，典型的案例是“摘要并重新阅读一次或两次”。
+
+任何笔记系统：你对它做点什么。SuperMemo：你和它打成一片。
+
+附注：Anki 介于笔记系统和 SuperMemo 之间：
+
+Anki 有主动回忆卡片的功能，但没有处理源材料/笔记(渐进阅读)的方法。如果没有源材料的安排算法(渐进阅读)，你很可能会将所有笔记批量导入 Anki，然后一口气用它们制作抽认卡。
+
+### 3. 做笔记的目标 (本身就是目的 vs 抽认卡的起点)
+
+**任何笔记系统：本身就是目的：记笔记就是最终目标**
+
+**SuperMemo：进一步处理(变成抽认卡)**
+
+做笔记的最终目标不是要有一套精美的摘要、高亮和重新组织的笔记，以便以后被动地复习。如果你认为做笔记意味着“已经获得了知识”，那么你就会恍然大悟。例如，谷歌是一个庞大的信息图书馆，但访问知识并不意味着习得知识。出于同样的原因，你可以访问个性化材料……就是这样。这并不意味着你已经学会了。
+
+**如果做笔记不应该是最终目标，那么什么才是最终目标呢？**
+
+这是下一步的起点：将相关信息转化为可测试的材料(又名抽认卡)。你将所有信息分解成可测试的小块，以便自我测试。从这个角度来看，做笔记就为抽认卡收集信息。做笔记的目的应该是从中制作抽认卡。人们认为做笔记本身就是目的。不，这是下一步的手段：
+
+&gt; 学习资源(讲座 PDF、教程视频、阅读材料)—&gt;做笔记—&gt;抽认卡  
+&gt; 渐进阅读：从源材料做笔记—&gt;提取制卡
+
+#### 做笔记就是选取相关信息
+
+就《[作为生成性活动的学习：促进理解的八个学习策略![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.amazon.com/Learning-Generative-Activity-Strategies-Understanding/dp/1107069912)》中的 SOI 模型而言，做笔记主要是第一步，S：从感觉记忆中选取相关信息(从指导材料中，即你的学习材料)。
+
+:-: ![](https://pic4.zhimg.com/80/v2-bf9bb64dc1cb703d34621d1d353f99b7_720w.jpg)
+
+做笔记只是用来记录你认为重要或相关的信息。例如，你在一次重要考试中所做的笔记将与你在休闲阅读中所做的笔记大不相同。你将如何处理捕获的信息则是另一回事。
+
+#### 为什么是抽认卡？
+
+再看看上表。抽认卡综合运用了**练习测试**(高效)、**分布练习**(高效)和交叉练习(中效)等学习策略，即这些策略的最佳实现方式是通过抽认卡；使用抽认卡的最佳方式是……你猜对了，是通过 SRS (SuperMemo/Anki)。
+
+#### 在笔记系统中进行知识管理是白费功夫
+
+在使用 SuperMemo 之前，我使用的是 OneNote。我有文件夹、章节、笔记，有组织，有标记。这是我 2016 年 OneNote 的截图。这是我为《[认知天性![](https://img.kancloud.cn/59/55/595584352c755a01a25fe63d6268d569.svg)](https://www.amazon.com/Make-Stick-Science-Successful-Learning/dp/0674729013)》做的笔记：
+
+:-: ![](https://img.kancloud.cn/c1/61/c161f0b352d9b0f2032f58194199e9f3_720x701.jpg)
+
+诚然，OneNote (或 Evernote) 有许多 SuperMemo 没有的功能：同步、内置 OCR、现代美观的 UI 设计和界面、移动版本可以“随时随地查找和查看”。
+
+笔记系统中固然可以给你干净、详尽、细致分类、可即时搜索、标签加好的、组织有序的笔记，并可在 5 台设备上同步。然而，这些笔记几乎毫无用处，因为最关键要素缺失了，即间隔检索练习(上面讨论的三点)，它。所有这些都只是花里胡哨，因为**重要的是你如何处理这些信息**。
+
+任何笔记系统都只是一堆可供书写的空白电子纸。他们本质上没有促进学习的功能：主动回忆，分布练习(安排稍后复习)，与储存信息交互的反馈系统。如果没有与知识系统的丰富交互，你或多或少就只是为各种信息编制索引的人类谷歌，而这些信息并非知识。
+
+&gt; 你在抨击任何不是 SuperMemo 的笔记系统。
+
+我认为它们都属于同一个类别 (学习工具)，所以这种比较并不是越界的 (至少在我看来是这样)。SuperMemo 不仅仅是笔记系统，尽管如此，它也是笔记系统。此外，如果有一个最好的学习策略 (这里有)，那么任何不是这样的策略都是次优的。请回过头来参考上面的实用方法评估表：
+
+SuperMemo:
+
+练习测试: ✔
+
+分布练习: ✔
+
+交叉练习: ✔
+
+只有两种技术被评为高分，SuperMemo (或 Anki 就这一点而言)拥有这一点。
+
+## 结束语
+
+至此，我意识到这次讨论体现了我们对学习的不同信念，这体现在我们使用的工具中：
+
+笔记系统：从原始材料中摘要和高亮；“偶尔”或“经常”重新阅读。
+
+间隔复习软件 (SuperMemo/Anki)：检索练习 (主动回忆)、分布练习、交叉练习
+
+我不是在抨击任何特定的笔记系统 (OneNote 或 Evernote)。直截了当地说，我在抨击所有的笔记系统。只是做笔记的“标准做法”没有用，也没有效果。推而广之，支持这一目标的系统也不是很有用和有效。换句话说，SuperMemo 彻底改变了我思考学习、信息和知识的方式，以至于现在我认为任何笔记系统 (OneNote 或 Evernote) 都几乎毫无用处。
+                    </div>
+        <div class="catalog">
+            <ul>
+                                    <li><a href="2451105">导读</a></li>
+                                    <li><a href="2450636">第 0 章 渐进学习是什么</a></li>
+                                    <li><a href="2450556">高中生视角</a></li>
+                                    <li><a href="2450558">心理学视角</a></li>
+                                    <li><a href="2450557">程序员视角</a></li>
+                                    <li><a href="2450637">第 1 章 为什么渐进学习</a></li>
+                                    <li><a href="2450560">我从 Anki 转向 SuperMemo</a></li>
+                                    <li><a href="2450561">SuperMemo 比传统笔记强在哪</a></li>
+                                    <li><a href="2450562">SuperMemo 解决了哪些问题</a></li>
+                                    <li><a href="2450638">第 2 章 入门渐进学习</a></li>
+                                    <li><a href="2450594">基本概念与操作</a></li>
+                                    <li><a href="2450595">导入材料</a></li>
+                                    <li><a href="2450596">样式统一</a></li>
+                                    <li><a href="2450597">工作流</a></li>
+                                    <li><a href="2453522">做好备份</a></li>
+                                    <li><a href="2450639">第 3 章 更进一步</a></li>
+                                    <li><a href="2450600">选择学习材料</a></li>
+                                    <li><a href="2450601">渐进摘录处理</a></li>
+                                    <li><a href="2450602">元记忆判断</a></li>
+                                    <li><a href="2450603">概念组最佳实践</a></li>
+                                    <li><a href="2450604">拥抱优先级</a></li>
+                                    <li><a href="2450605">知识树与神经复习</a></li>
+                                    <li><a href="2450606">概念链接与渐进写作</a></li>
+                                    <li><a href="2450640">第 4 章 奇淫巧技</a></li>
+                                    <li><a href="2450608">QuickerMemo</a></li>
+                                    <li><a href="2450609">知识树转思维导图</a></li>
+                                    <li><a href="2450610">图片遮挡教程</a></li>
+                                    <li><a href="2454059">第 5 章 制卡原则</a></li>
+                                    <li><a href="2454060">20 原则本土版</a></li>
+                                    <li><a href="2454061">20 原则 20 周年版</a></li>
+                                    <li><a href="2454062">20 原则学术版</a></li>
+                                    <li><a href="2451106">结语</a></li>
+                            </ul>
+        </div>
+    </div>
+    <div class="dimmer">
+        <div class="loader"></div>
+    </div>
+</div>
+<script type="application/payload+json">
+    {
+        "config":{"plugins":["image-zoom","comment","video"],"pluginsConfig":{"theme-default":{"auto_open":true,"show_nav":true,"logo":[],"navs":[{"title":"\u4ea4\u6d41\u8ba8\u8bba","url":"https:\/\/qun.qq.com\/qqweb\/qunpro\/share?_wv=3&_wwv=128&appChannel=share&inviteCode=1qJTCn&from=181074&biz=ka&shareSource=5","target":true},{"title":"\u5e2e\u52a9\u6587\u6863","url":"https:\/\/www.yuque.com\/supermemo\/wiki","target":true},{"title":"\u8d44\u6e90\u4e0b\u8f7d","url":"https:\/\/www.yuque.com\/supermemo\/howtolearn\/lazy_package","target":true}]}},"id":500500,"title":"SuperMemo \u6e10\u8fdb\u5b66\u4e60\u5927\u578b\u6307\u5317","description":"\u7528\u6e10\u8fdb\u5b66\u4e60\u7684\u65b9\u5f0f\u5efa\u7acb\u6211\u4eec\u5927\u8111\u7684\u6982\u5ff5\u7f51\u7edc","cover":"https:\/\/cover.kancloud.cn\/ankigaokao\/incremental_learning!middle","author":{"name":"\u53f6\u5cfb\u5ce3","email":"l.m.kagamigawachloe@outlook.com","url":"https:\/\/www.kancloud.cn\/@ankigaokao"}},
+        "options":{"book":{"id":500500,"title":"SuperMemo \u6e10\u8fdb\u5b66\u4e60\u5927\u578b\u6307\u5317","namespace":"ankigaokao","name":"incremental_learning","price":0,"cover":"https:\/\/cover.kancloud.cn\/ankigaokao\/incremental_learning","middle_cover":"https:\/\/cover.kancloud.cn\/ankigaokao\/incremental_learning!middle","small_cover":"https:\/\/cover.kancloud.cn\/ankigaokao\/incremental_learning!small"},"plugins":{"host":"plugins.kancloud.cn","scheme":"https"},"web":{"host":"www.kancloud.cn","scheme":"https"},"environment":"reader","base":"\/ankigaokao\/incremental_learning\/content","entry":"\/ankigaokao\/incremental_learning"},
+        "style": "cCB7DQogICAgbWFyZ2luLWJsb2NrLXN0YXJ0OiAxZW07DQogICAgbWFyZ2luLWJsb2NrLWVuZDogMWVtCn0=",
+        "article":{"path":"2450561","ref":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/NoteToSuperMemo.md","title":"SuperMemo \u6bd4\u4f20\u7edf\u7b14\u8bb0\u5f3a\u5728\u54ea","content":"# \u4e3a\u4ec0\u4e48\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u5728 SuperMemo \u9762\u524d\u90fd\u662f\u5783\u573e (\u5982 OneNote \u548c Evernote)\n\n> \u8bd1\u8005\uff1a[\u53f6\u5cfb\u5ce3![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.zhihu.com\/people\/L.M.Sherlock)\n> \u539f\u6587\uff1a[MasterHowToLearn - Why SuperMemo Trashes Any Note-taking System (Including OneNote and Evernote)![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.masterhowtolearn.com\/2020-02-28-why-supermemo-trashes-any-note-taking-system-(including-onenote-and-evernote)\/)\n\n\u592a\u957f\u4e0d\u770b\u7248\uff1a\n\nOneNote\/Evernote\uff1a\u5355\u5411\u4ea4\u4e92\uff1a\u4f60\u53ef\u4ee5\u67e5\u627e\u548c\u9605\u8bfb\u4fe1\u606f(\u5373\u4f60\u7684\u7b14\u8bb0)\uff0c\u8f6f\u4ef6\u76f8\u5f53\u4e8e\u672c\u5730\u641c\u7d22\u5f15\u64ce, \u53ef\u4ee5\u7528\u4e8e\u6574\u7406\u7d22\u5f15\u4fe1\u606f\n\nSuperMemo\uff1a\u53cc\u5411\u4ea4\u4e92\uff1a\u4fe1\u606f\u627e\u5230\u4f60\uff1b\u4f60\u628a\u4fe1\u606f\u8f6c\u5316\u6210\u77e5\u8bc6\n\n\u6ce8\u610f\uff1a\u5982\u679c\u5bf9\u4f60\u800c\u8a00\uff0c\u7b14\u8bb0\u7cfb\u7edf\u7684\u7528\u9014\u53ea\u662f\u540d\u4e3a\u77e5\u8bc6\u7ba1\u7406\u7684\u7b14\u8bb0\u5b58\u50a8\uff0c\u90a3\u4e48\u8fd9\u6837\u6bd4\u8f83\u5e76\u4e0d\u516c\u5e73\u3002\u7136\u800c\uff0c\u5982\u679c\u4f60\u4e0d\u6b62\u6b65\u4e8e\u6b64\uff0c\u800c\u4e14\u8fd8\u5e0c\u671b\u80fd\u6709\u52a9\u4e8e\u5b66\u4e60(\u6211\u8ba4\u4e3a\u5e94\u8be5\u662f\u8fd9\u6837)\uff0c\u90a3\u4e48 SuperMemo \u6bd4\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u5f3a\u5f97\u4e0d\u5728\u4e00\u4e2a\u6570\u91cf\u7ea7\u4e0a\u3002\u8bf7\u7ee7\u7eed\u8bfb\u4e0b\u53bb\u3002\n\n## \u76ee\u5f55\n\n[TOC=2,4]\n\n## \u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u7684\u9884\u671f\u7528\u9014 (\u6458\u8981\u3001\u9ad8\u4eae\u548c\u91cd\u65b0\u9605\u8bfb)\n\n\u53c2\u89c1\u53e6\u4e00\u4e2a\u7c7b\u4f3c\u7684\u8ba8\u8bba\uff1a[\u5b66\u4e60\u65f6\u4e0d\u5e94\u8be5\u505a\u7b14\u8bb0\u7684 3 \u4e2a\u91cd\u8981\u539f\u56e0![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.masterhowtolearn.com\/2019-08-29-3-fatal-reasons-why-you-shouldnt-be-taking-notes-when-studying\/)\n\n\u4e24\u79cd\u5178\u578b\u4f7f\u7528\u573a\u666f\uff1a\n\n\u4f60\u5728\u8bfb\u8bfe\u7a0b\u8981\u6c42\u7684\u4e66\u3002\u4f60\u5728 OneNote\/Evernote \u4e2d\u5199\u4e0b\u63d0\u8981\u3002\u505a\u5b8c\u7b14\u8bb0\u540e\uff0c\u4f60\u5728\u8003\u8bd5\u524d(\u4e0b\u4e2a\u661f\u671f\u6216\u4e00\u4e2a\u6708)\u201c\u9891\u7e41\u201d\u91cd\u65b0\u9605\u8bfb\u3002\n\n\u53e6\u4e00\u573a\u666f\uff1a\u4f60\u4e3a\u4f60\u8bfb\u7684\u6bcf\u4e00\u672c\u4e66\u505a\u7b14\u8bb0\u3002\u4f60\u6709\u4e00\u4e2a\u4f60\u8fd9\u4e9b\u5e74\u8bfb\u8fc7\u7684\u6240\u6709\u4e66\u7684\u7b14\u8bb0\u96c6\u5408\u3002\u4f60\u7ecf\u5e38\u6216\u201c\u5076\u5c14\u201d\u56de\u987e\u5b83\u4eec\u3002\n\n*\u6709\u4ec0\u4e48\u95ee\u9898\u5417\uff1f*\n\n## \u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u4e2d\u7684\u4e24\u4e2a\u5173\u952e\u7f3a\u9677\n\n\u4e0a\u8ff0\u4e24\u79cd\u60c5\u666f\u5305\u542b\u4e24\u4e2a\u6b65\u9aa4\uff1a\n\n1.  \u521b\u5efa\u7b14\u8bb0(\u901a\u8fc7\u603b\u7ed3\u548c\u9ad8\u4eae)\n2.  \u590d\u4e60\u7b14\u8bb0(\u901a\u8fc7\u91cd\u65b0\u9605\u8bfb)\n\n### 1. \u521b\u5efa\u7b14\u8bb0\n\n\u8bf7\u53c2\u9605\u4e0b\u8868\u3002\u6458\u8981\u548c\u9ad8\u4eae\u662f\u4f4e\u6548\u7684\u3002\n\n### 2. \u590d\u4e60\u7b14\u8bb0\n\n#### I. \u91cd\u65b0\u9605\u8bfb\u662f\u4f4e\u6548\u7684\n\n> :-: ![](https:\/\/img.kancloud.cn\/8d\/3f\/8d3fe8e7f14749e67ef143a23bfd0baf_720x315.jpg)\n> \u56fe\u7247\u6765\u6e90\uff1a[Improving Students\u2019 Learning With Effective Learning Techniques![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.researchgate.net\/publication\/258180568_Improving_Students)\n\n#### II. \u4e0d\u53ef\u6301\u7eed\u7684\u590d\u4e60\u8ba1\u5212\n\n\u4ece\u957f\u8fdc\u6765\u770b\uff0c\u201c\u7ecf\u5e38\u590d\u4e60\u201d\u662f\u4e0d\u53ef\u6301\u7eed\u7684\u3002\u968f\u7740\u4f60\u7684\u7b14\u8bb0\u8d8a\u6765\u8d8a\u591a\uff0c\u91cd\u8bfb\u7b14\u8bb0\u7684\u8ba1\u5212\u4e0d\u53ef\u80fd\u6301\u7eed\u3002\u5f53\u7136\uff0c\u5927\u591a\u6570\u4eba\u6ca1\u6709\u610f\u8bc6\u5230\u590d\u4e60\u7b14\u8bb0\u7684\u5fc5\u8981\u3002\u5373\u4f7f\u4ed6\u4eec\u6709\u610f\u8bc6\uff0c\u5728\u5927\u591a\u6570\u60c5\u51b5\u4e0b\u4e5f\u201c\u4e24\u5230\u4e09\u6b21\u201d(\u4e00\u5e74\u5185\u5417\uff1f)\u3002\u4ed6\u4eec\u6ca1\u6709\u590d\u4e60\u5b89\u6392\u7cfb\u7edf\u3002\n\n\u4f8b\u5982\uff0c\u4f60\u7684\u201c\u56fe\u4e66\u7b14\u8bb0\u201d\u96c6\u5408\u4e2d\u6709 30 \u672c\u4e66\uff0c\u4f60\u6253\u7b97\u4ec0\u4e48\u65f6\u5019\u91cd\u65b0\u9605\u8bfb\u6bcf\u4e2a\u8bfb\u4e66\u7b14\u8bb0\uff1f\u5982\u679c\u4f60\u662f\u4e00\u4e2a\u4e13\u5fc3\u81f4\u5fd7\u7684\u5b66\u4e60\u8005\uff0c\u5982\u679c\u6ca1\u6709\u590d\u4e60\u5b89\u6392\u7cfb\u7edf\uff0c\u4f60\u4e0d\u5f97\u4e0d\u624b\u52a8\u8ddf\u8e2a\u6240\u6709\u7684\u590d\u4e60\u5b89\u6392\u3002\u4e5f\u8bb8\u4f60\u4f1a\u63d0\u9192\u81ea\u5df1(\u901a\u8fc7\u4e00\u4e9b\u65e5\u5386\u901a\u77e5)\u91cd\u65b0\u9605\u8bfb\u4f60\u7684\u8bfb\u4e66\u7b14\u8bb0\u3002\u56e0\u4e3a\u201c\u4e0d\u5b9a\u671f\u590d\u4e60\u201d\u610f\u5473\u7740\u4e0d\u6b62\u4e00\u6b21\uff0c\u6bd4\u5982 3 \u6b21\uff1a30 \u672c\u4e66 x 3 \u6b21=90 \u6b21\u65e5\u5386\u4e8b\u4ef6\u3002\u8fd9\u76f8\u5f53\u4e8e\u5b9e\u73b0\u4e00\u4e2a\u7eb8\u7b14\u7248[\u83b1\u7279\u7eb3\u7cfb\u7edf![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/en.wikipedia.org\/wiki\/Leitner_system)\uff1a\u4f60\u600e\u4e48\u80fd\u7ef4\u62a4 10,000 \u5f20\u7eb8\u8d28\u62bd\u8ba4\u5361\uff1f\u7b14\u8bb0\u8d8a\u591a\uff0c\u8fd9\u9879\u5de5\u4f5c\u8d8a\u7e41\u91cd\u800c\u96be\u4ee5\u4f01\u53ca\u3002\u5728\u5927\u591a\u6570\u60c5\u51b5\u4e0b\uff0c\u4f60\u6240\u6709\u7684\u7b14\u8bb0\u4e00\u7ecf\u521b\u5efa\u4fbf\u53ea\u662f\u5728\u79ef\u7070(\u6570\u5b57\u7070\u5c18)\u3002\n\n\u5728\u201c[\u4e3a\u4ec0\u4e48 Obsidian \u5c06\u8d85\u8d8a Roam![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.youtube.com\/watch%3Fv%3D_x54XJrECvk)\u201d(\\[6:12\\])\u89c6\u9891\u4e2d\uff0c\u4ed6\u8bf4\uff1a\u201cEvernote \u8ba9\u6211\u8086\u65e0\u5fcc\u60ee\u5730\u56e4\u79ef\u5185\u5bb9\uff0c\u8349\u7387\u5730\u6536\u96c6\u522b\u4eba\u7684\u601d\u8003\u3002\u201d\n\n> \u540c\u6837\u7684\u9053\u7406\u4e5f\u9002\u7528\u4e8e\u4e66\u7b7e\u7ba1\u7406\u3002\u6211\u4eec\u5076\u7136\u53d1\u73b0\u4e86\u4e00\u4e2a\u6709\u8da3\u7684\u7f51\u9875\uff0c\u4e0d\u60f3\u9519\u8fc7\u4fe1\u606f\uff0c\u6240\u4ee5\u6211\u4eec\u7559\u4e0b\u4e66\u7b7e\u3002\u8fd9\u4e00\u5806\u6570\u5b57\u4e66\u7b7e\uff0c\u548c\u4e00\u5806\u611f\u89c9\u503c\u5f97\u4e86\u89e3\u7684\u8bba\u6587\uff0c\u6ca1\u4ec0\u4e48\u4e0d\u540c\u3002\u4e0d\u8fc7\uff0c\u5728\u8fd9\u91cc\uff0c\u4fdd\u5b58\u7684\u5185\u5bb9\u4e5f\u6ca1\u6709\u88ab\u9605\u8bfb\u3002\u2014\u2014[\u6536\u85cf\u5bb6\u7684\u8c2c\u8bba![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/zettelkasten.de\/posts\/collectors-fallacy\/)\n\n[\u5965\u5229\u00b7\u6d1b\u7ef4\u5c14![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.ollielovell.com\/ollielearns\/spaced-repetition-incremental-reading-anki-dendro\/)\u662f\u8fd9\u6837\u8bf4\u7684\uff1a\n\n> \u6700\u521d\uff0c\u6211\u4f1a\u5728 Word \u6587\u6863\u4e2d\u505a\u7b14\u8bb0\uff0c\u4f46\u6211\u518d\u4e5f\u4e0d\u91cd\u6e29\u5b83\u4eec\u4e86\u3002\u7136\u540e\u6211\u5728\u8c37\u6b4c\u6587\u6863\u4e2d\u5236\u4f5c\u4e86\u5b83\u4eec\uff0c\u4f46\u6211\u518d\u4e5f\u4e0d\u4f1a\u518d\u6b21\u8bbf\u95ee\u5b83\u4eec\u4e86\u3002\u7136\u540e\u6211\u5728 Evernote \u5236\u4f5c\u4e86\u5b83\u4eec\uff0c\u4f46\u6211\u518d\u4e5f\u4e0d\u4f1a\u53bb\u770b\u5b83\u4eec\u4e86\u3002\u6700\u8fd1\uff0c\u6211\u628a\u7b14\u8bb0\u5199\u6210\u90ae\u4ef6\u53d1\u7ed9\u81ea\u5df1\u3002\u8fd9\u4e2a\u65b9\u6cd5\u7a0d\u5fae\u597d\u4e00\u70b9\uff0c\u4f46\u6211\u4ecd\u7136\u9762\u5bf9\u7e41\u91cd\u7410\u788e\u7684\u5de5\u4f5c\uff1a\u91cd\u6e29\u6211\u5728\u67d0\u6b21\u4f1a\u8bae\u4e2d\u505a\u7684\u5927\u91cf\u7b14\u8bb0\uff0c\u70b9\u8fdb\u6240\u6709\u94fe\u63a5\uff0c\u5e76\u4e3a\u6709\u4ef7\u503c\u7684\u90e8\u5206\u5236\u4f5c Anki \u5361\u7247(\u901a\u5e38\u5728\u8bb0\u5fc6\u4e4b\u524d\u6ca1\u6709\u6df1\u5165\u5b66\u4e60)\u3002\n\n\u56e0\u6b64\uff0c\u901a\u8fc7\u6458\u8981\u548c\u9ad8\u4eae\u6765\u521b\u5efa\u7b14\u8bb0\u662f\u65e0\u6548\u7684(#1)\u3002\u901a\u8fc7\u91cd\u65b0\u9605\u8bfb\u590d\u4e60\u7b14\u8bb0\u4e5f\u662f\u65e0\u6548\u7684(#2.1)\uff0c\u540c\u65f6\u4e5f\u662f\u4e0d\u53ef\u7ef4\u62a4\uff0c\u4e0d\u53ef\u6301\u7eed\u7684(#2.2)\u3002\u56e0\u6b64\uff0c\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u63d0\u4f9b\u7684\u4ef7\u503c\u90fd\u5f88\u5c0f\uff0c\u800c\u4e14\u5927\u90e8\u5206\u90fd\u662f\u5f92\u52b3\u65e0\u529f\u3002\u5728\u5927\u591a\u6570\u60c5\u51b5\u4e0b\uff0c\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u90fd\u53ea\u662f\u8fd9\u6837\uff1a\u4e00\u5806\u6709\u7ec4\u7ec7\u7684\u7b14\u8bb0\u3002\n\n## \u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf vs SuperMemo\n\n1. \u4f55\u65f6\u590d\u4e60(\u624b\u52a8 vs \u81ea\u52a8)\n2. \u4ea4\u4e92\u7a0b\u5ea6(\u88ab\u52a8 vs \u4e3b\u52a8)\n3. \u505a\u7b14\u8bb0\u7684\u76ee\u6807(\u672c\u8eab\u5c31\u662f\u76ee\u7684 vs \u62bd\u8ba4\u5361\u7684\u8d77\u70b9)\n\n### 1. \u4f55\u65f6\u590d\u4e60\n\n**\u5b89\u6392\u590d\u4e60\u65f6\u95f4\uff1a**\n\n**\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\uff1a\u624b\u52a8\u67e5\u627e\u4fe1\u606f\u6765\u590d\u4e60\u3002\u4f46\u8fd9\u5e26\u6765\u4e86\u5143\u5224\u65ad\u7684\u95ee\u9898\uff1a**\n\n> \u4f60\u600e\u4e48\u77e5\u9053\u4ec0\u4e48\u65f6\u5019\u5e94\u8be5\u590d\u4e60\u7b14\u8bb0\u5462\uff1f\n\n\u4f60\u4e0d\u77e5\u9053\u3002\u6211\u4eec\u4e0d\u77e5\u9053\u4ec0\u4e48\u662f\u6211\u4eec\u4e0d\u77e5\u9053\u7684\uff0c\u4ec0\u4e48\u662f\u6211\u4eec\u9700\u8981\u77e5\u9053\u7684\u3002\u683c\u6e29\u7684\u300a[\u6709\u6548\u5b66\u4e60\u7684\u95f4\u9694\u91cd\u590d![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.gwern.net\/Spaced-repetition)\u300b\u4e00\u4e66\u7cbe\u8f9f\u5730\u63cf\u8ff0\u4e86\u8fd9\u4e00\u6096\u8bba\uff1a\n\n> \u6211\u4eec\u5f88\u96be\u77e5\u9053\u4ec0\u4e48\u65f6\u5019\u5e94\u8be5\u590d\u4e60\u2014\u2014\u6700\u597d\u7684\u65f6\u673a\u662f\u5c06\u5fd8\u672a\u5fd8\u7684\u65f6\u5019\u3002\u4f46\u8fd9\u5c31\u662f\u75c7\u7ed3\uff1a\u5982\u679c\u4f60\u5373\u5c06\u5fd8\u8bb0\u5b83\uff0c\u4f60\u5e94\u8be5\u600e\u4e48\u8bb0\u5f97\u8981\u590d\u4e60\u5b83\u5462\uff1f\u4f60\u53ea\u8bb0\u5f97\u8981\u590d\u4e60\u4f60\u77e5\u9053\u7684\u5185\u5bb9\uff0c\u4f46\u4f60\u5df2\u7ecf\u77e5\u9053\u7684\u5185\u5bb9\u53c8\u4e0d\u9700\u8981\u590d\u4e60\uff01\n\n**SuperMemo\uff1a\u81ea\u52a8\u5b89\u6392\u590d\u4e60(\u5206\u5e03\u7ec3\u4e60)\uff1a\u57fa\u4e8e[\u4f18\u5148\u7ea7\u961f\u5217![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.yuque.com\/supermemo\/wiki\/priority_queue)\u548c\u53cd\u9988\u7ed9\u51fa\u6240\u9700\u4fe1\u606f\u7684\u7b97\u6cd5**\n\n\u5206\u5e03\u7ec3\u4e60\u610f\u5473\u7740\u660e\u786e\u7684\u590d\u4e60\u5b89\u6392\uff1a\u5bf9\u4e8e\u4e00\u4efd\u8bfb\u4e66\u7b14\u8bb0\uff0c\u5728\u4e4b\u540e\u7684\u51e0\u5468\u6216\u51e0\u6708\u5185\u5b89\u6392\u591a\u6b21\u590d\u4e60\u3002\u5206\u5e03\u7ec3\u4e60\u53ea\u5173\u5fc3**\u4f55\u65f6**\uff0c\u800c\u4e0d\u662f**\u5982\u4f55**\u3002\u6362\u53e5\u8bdd\u8bf4\uff0c\u5373\u4f7f\u4f60\u6ca1\u6709\u4efb\u4f55\u201c\u62bd\u8ba4\u5361-\u56de\u5fc6\u201d\uff0c\u6ca1\u6709\u4e3b\u52a8\u56de\u5fc6\uff0cSuperMemo \u4e5f\u4f1a\u5b89\u6392\u4f60\u7684\u6bcf\u4e2a\u8bfb\u4e66\u7b14\u8bb0\u5728\u672a\u6765\u51e0\u5468\u6216\u51e0\u4e2a\u6708\u540e\u91cd\u65b0\u9605\u8bfb\u3002\u8fd9\u907f\u514d\u4e86\u4e0a\u9762\u7684\u201c\u4e0d\u53ef\u6301\u7eed\u7684\u624b\u52a8\u590d\u4e60\u5b89\u6392\u201d\u95ee\u9898\u3002\n\n\u88ab\u52a8\uff1a\u6709\u4e00\u4e2a\u4e66\u7b7e\u7f51\u7ad9\u5217\u8868\u6216\u4e00\u4e2a\u4f3c\u4e4e\u6ca1\u5b8c\u6ca1\u4e86\u7684\u9605\u8bfb\u6e05\u5355\u3002\n\n\u4e3b\u52a8\uff1a\u5c06\u5b83\u4eec\u5bfc\u5165\u5230 SuperMemo \u4e2d\uff0c\u8fd9\u6837\u5b83\u4eec\u5c31\u53ef\u4ee5\u5728\u5c06\u6765\u5c55\u793a\u81ea\u5df1\u3002\n\n**\u5728\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u4e2d\uff0c\u4f60\u90fd\u5fc5\u987b\u5bfb\u627e\u4fe1\u606f\u3002\u5728 SuperMemo \u4e2d\uff0c\u4fe1\u606f\u4f1a\u5bfb\u627e\u4f60\u3002**\n\n> :-: ![](https:\/\/img.kancloud.cn\/b8\/5e\/b85e42ca6bdf8fb0a84acb02573dca91_638x308.jpg)\n> \u6211\u8bfb\u4e86\u4e00\u7bc7\u4e00\u5e74\u524d\u6211\u5bfc\u5165 SuperMemo \u7684\u6587\u7ae0\u3002\n\n### 2. \u4ea4\u4e92 (\u88ab\u52a8 vs \u4e3b\u52a8)\n\n**\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\uff1a\u88ab\u52a8\u4ea4\u4e92**\n\n\u6b63\u5982\u6211\u5728\u4e0a\u9762\u7684\u201c\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u4e2d\u7684\u4e24\u4e2a\u5173\u952e\u7f3a\u9677\u201d\u4e2d\u63d0\u5230\u7684\uff1a\u6458\u8981\u4e0d\u662f\u88ab\u52a8\u7684\uff0c\u800c\u9ad8\u4eae\u548c\u91cd\u65b0\u9605\u8bfb\u662f\u88ab\u52a8\u7684\u3002\n\n\u5728\u7b14\u8bb0\u7cfb\u7edf\u4e2d\uff0c\u4f60\u4e0d\u4f1a\u4e3b\u52a8\u7ef4\u62a4\u4f60\u7684\u4fe1\u606f\u3002\u4f60\u4e0d\u4f1a\u7528\u5b83\u8fdb\u884c\u4e3b\u52a8\u56de\u5fc6\u3002\u5927\u591a\u6570\u60c5\u51b5\u4e0b\uff0c\u4f60\u4e0d\u4f1a\u91cd\u5199\u3001\u6269\u5c55\u3001\u8be6\u8ff0\u6216\u4fee\u6539\u5185\u5bb9\uff0c\u53ea\u6709\u4e00\u644a\u9759\u6b62\u7684\u6570\u5b57\u5316\u7b14\u8bb0\u3002\n\n**SuperMemo\uff1a\u4e3b\u52a8\u4ea4\u4e92**\n\n\u5728 SuperMemo \u4e2d\uff0c\u4f60\u6709\u4e00\u4e2a\u5f85\u529e\u7684\u961f\u5217\u3002 \u53ef\u4ee5\u5c06\u5176\u89c6\u4e3a\u4e00\u6761\u4f20\u9001\u5e26\uff1a\u4f60\u4f1a\u6536\u5230\u5f88\u591a\u4fe1\u606f\u3002 \u4ed6\u4eec\u6765\u627e\u4f60\u3002 \u5bf9\u4e8e\u6bcf\u6761\u4fe1\u606f\uff0c\u4f60\u90fd\u5fc5\u987b\u79ef\u6781\u7ef4\u62a4\uff1a\n\n\u5bf9\u4e8e\u6458\u5f55\u5361\u7247(\u6587\u7ae0)\\[\u6e10\u8fdb\u9605\u8bfb\\]:\n\n1.  \u901a\u8fc7\u70b9\u51fb Next \u5ffd\u7565\u5b83(\u5373\uff0c\u53e6\u4e00\u4e2a\u65f6\u95f4\u518d\u8bfb)\n2.  \u5220\u9664\u5b83(\u4e0d\u518d\u9700\u8981)\n3.  \u9605\u8bfb\u540e\u51b3\u5b9a\uff1a\n\n*   \u6458\u5f55\u91cd\u8981\u4fe1\u606f\n*   \u5982\u679c\u4f60\u8fd8\u6ca1\u8bfb\u5b8c\uff0c\u8bbe\u7f6e\u9605\u8bfb\u70b9(`Ctrl + F7`)\n\n\u5bf9\u4e8e\u95ee\u7b54\u5361\u7247(\u62bd\u8ba4\u5361)\uff1a\n\n1.  \u56de\u5fc6\u7b54\u6848\uff0c\u5e76\u63d0\u4f9b\u53cd\u9988\u8bc4\u5206\uff1a\n\n1.  \u56de\u5fc6\u5931\u8d25\uff1a(\u81ea\u52a8\u5b89\u6392\u91cd\u8bd5)\n2.  \u56de\u5fc6\u6210\u529f\uff1aSuperMemo \u5c06\u5176\u5b89\u6392\u5728\u672a\u6765\u6570\u5468\u3001\u6570\u6708\u6216\u6570\u5e74\u4e4b\u540e\n\n3.  \u91cd\u65b0\u63aa\u8f9e\u3001\u7cbe\u7b80\u3001\u5220\u9664\u4e0d\u5fc5\u8981\u7684\u5185\u5bb9\n4.  \u5220\u9664\u5b83\n\n\u4f60\u6709\u6ca1\u6709\u770b\u5230\u4f60\u4e0e SuperMemo \u7684\u4ea4\u4e92\u6bd4\u7b14\u8bb0\u7cfb\u7edf\u591a\u4e86\u591a\u5c11\uff1f\u4e5f\u8bb8\u4f60\u53ef\u4ee5\u5728\u7b14\u8bb0\u7cfb\u7edf\u4e2d\u624b\u52a8\u505a\u8fd9\u4e9b\uff0c\u4f46\u8fd9\u4e0d\u662f\u201c\u6807\u51c6\u5b9e\u8df5\u7684\u4e00\u90e8\u5206\u201d\uff0c\u5173\u952e\u7684\u7f3a\u9677\u662f\u7f3a\u4e4f\u590d\u4e60\u5b89\u6392\u7cfb\u7edf\u3002\u6b63\u5982\u6211\u5728\u4e0a\u9762\u63d0\u5230\u7684\uff0c\u5178\u578b\u7684\u6848\u4f8b\u662f\u201c\u6458\u8981\u5e76\u91cd\u65b0\u9605\u8bfb\u4e00\u6b21\u6216\u4e24\u6b21\u201d\u3002\n\n\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\uff1a\u4f60\u5bf9\u5b83\u505a\u70b9\u4ec0\u4e48\u3002SuperMemo\uff1a\u4f60\u548c\u5b83\u6253\u6210\u4e00\u7247\u3002\n\n\u9644\u6ce8\uff1aAnki \u4ecb\u4e8e\u7b14\u8bb0\u7cfb\u7edf\u548c SuperMemo \u4e4b\u95f4\uff1a\n\nAnki \u6709\u4e3b\u52a8\u56de\u5fc6\u5361\u7247\u7684\u529f\u80fd\uff0c\u4f46\u6ca1\u6709\u5904\u7406\u6e90\u6750\u6599\/\u7b14\u8bb0(\u6e10\u8fdb\u9605\u8bfb)\u7684\u65b9\u6cd5\u3002\u5982\u679c\u6ca1\u6709\u6e90\u6750\u6599\u7684\u5b89\u6392\u7b97\u6cd5(\u6e10\u8fdb\u9605\u8bfb)\uff0c\u4f60\u5f88\u53ef\u80fd\u4f1a\u5c06\u6240\u6709\u7b14\u8bb0\u6279\u91cf\u5bfc\u5165 Anki\uff0c\u7136\u540e\u4e00\u53e3\u6c14\u7528\u5b83\u4eec\u5236\u4f5c\u62bd\u8ba4\u5361\u3002\n\n### 3. \u505a\u7b14\u8bb0\u7684\u76ee\u6807 (\u672c\u8eab\u5c31\u662f\u76ee\u7684 vs \u62bd\u8ba4\u5361\u7684\u8d77\u70b9)\n\n**\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\uff1a\u672c\u8eab\u5c31\u662f\u76ee\u7684\uff1a\u8bb0\u7b14\u8bb0\u5c31\u662f\u6700\u7ec8\u76ee\u6807**\n\n**SuperMemo\uff1a\u8fdb\u4e00\u6b65\u5904\u7406(\u53d8\u6210\u62bd\u8ba4\u5361)**\n\n\u505a\u7b14\u8bb0\u7684\u6700\u7ec8\u76ee\u6807\u4e0d\u662f\u8981\u6709\u4e00\u5957\u7cbe\u7f8e\u7684\u6458\u8981\u3001\u9ad8\u4eae\u548c\u91cd\u65b0\u7ec4\u7ec7\u7684\u7b14\u8bb0\uff0c\u4ee5\u4fbf\u4ee5\u540e\u88ab\u52a8\u5730\u590d\u4e60\u3002\u5982\u679c\u4f60\u8ba4\u4e3a\u505a\u7b14\u8bb0\u610f\u5473\u7740\u201c\u5df2\u7ecf\u83b7\u5f97\u4e86\u77e5\u8bc6\u201d\uff0c\u90a3\u4e48\u4f60\u5c31\u4f1a\u604d\u7136\u5927\u609f\u3002\u4f8b\u5982\uff0c\u8c37\u6b4c\u662f\u4e00\u4e2a\u5e9e\u5927\u7684\u4fe1\u606f\u56fe\u4e66\u9986\uff0c\u4f46\u8bbf\u95ee\u77e5\u8bc6\u5e76\u4e0d\u610f\u5473\u7740\u4e60\u5f97\u77e5\u8bc6\u3002\u51fa\u4e8e\u540c\u6837\u7684\u539f\u56e0\uff0c\u4f60\u53ef\u4ee5\u8bbf\u95ee\u4e2a\u6027\u5316\u6750\u6599\u2026\u2026\u5c31\u662f\u8fd9\u6837\u3002\u8fd9\u5e76\u4e0d\u610f\u5473\u7740\u4f60\u5df2\u7ecf\u5b66\u4f1a\u4e86\u3002\n\n**\u5982\u679c\u505a\u7b14\u8bb0\u4e0d\u5e94\u8be5\u662f\u6700\u7ec8\u76ee\u6807\uff0c\u90a3\u4e48\u4ec0\u4e48\u624d\u662f\u6700\u7ec8\u76ee\u6807\u5462\uff1f**\n\n\u8fd9\u662f\u4e0b\u4e00\u6b65\u7684\u8d77\u70b9\uff1a\u5c06\u76f8\u5173\u4fe1\u606f\u8f6c\u5316\u4e3a\u53ef\u6d4b\u8bd5\u7684\u6750\u6599(\u53c8\u540d\u62bd\u8ba4\u5361)\u3002\u4f60\u5c06\u6240\u6709\u4fe1\u606f\u5206\u89e3\u6210\u53ef\u6d4b\u8bd5\u7684\u5c0f\u5757\uff0c\u4ee5\u4fbf\u81ea\u6211\u6d4b\u8bd5\u3002\u4ece\u8fd9\u4e2a\u89d2\u5ea6\u6765\u770b\uff0c\u505a\u7b14\u8bb0\u5c31\u4e3a\u62bd\u8ba4\u5361\u6536\u96c6\u4fe1\u606f\u3002\u505a\u7b14\u8bb0\u7684\u76ee\u7684\u5e94\u8be5\u662f\u4ece\u4e2d\u5236\u4f5c\u62bd\u8ba4\u5361\u3002\u4eba\u4eec\u8ba4\u4e3a\u505a\u7b14\u8bb0\u672c\u8eab\u5c31\u662f\u76ee\u7684\u3002\u4e0d\uff0c\u8fd9\u662f\u4e0b\u4e00\u6b65\u7684\u624b\u6bb5\uff1a\n\n> \u5b66\u4e60\u8d44\u6e90(\u8bb2\u5ea7 PDF\u3001\u6559\u7a0b\u89c6\u9891\u3001\u9605\u8bfb\u6750\u6599)\u2014>\u505a\u7b14\u8bb0\u2014>\u62bd\u8ba4\u5361  \n> \u6e10\u8fdb\u9605\u8bfb\uff1a\u4ece\u6e90\u6750\u6599\u505a\u7b14\u8bb0\u2014>\u63d0\u53d6\u5236\u5361\n\n#### \u505a\u7b14\u8bb0\u5c31\u662f\u9009\u53d6\u76f8\u5173\u4fe1\u606f\n\n\u5c31\u300a[\u4f5c\u4e3a\u751f\u6210\u6027\u6d3b\u52a8\u7684\u5b66\u4e60\uff1a\u4fc3\u8fdb\u7406\u89e3\u7684\u516b\u4e2a\u5b66\u4e60\u7b56\u7565![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.amazon.com\/Learning-Generative-Activity-Strategies-Understanding\/dp\/1107069912)\u300b\u4e2d\u7684 SOI \u6a21\u578b\u800c\u8a00\uff0c\u505a\u7b14\u8bb0\u4e3b\u8981\u662f\u7b2c\u4e00\u6b65\uff0cS\uff1a\u4ece\u611f\u89c9\u8bb0\u5fc6\u4e2d\u9009\u53d6\u76f8\u5173\u4fe1\u606f(\u4ece\u6307\u5bfc\u6750\u6599\u4e2d\uff0c\u5373\u4f60\u7684\u5b66\u4e60\u6750\u6599)\u3002\n\n:-: ![](https:\/\/pic4.zhimg.com\/80\/v2-bf9bb64dc1cb703d34621d1d353f99b7_720w.jpg)\n\n\u505a\u7b14\u8bb0\u53ea\u662f\u7528\u6765\u8bb0\u5f55\u4f60\u8ba4\u4e3a\u91cd\u8981\u6216\u76f8\u5173\u7684\u4fe1\u606f\u3002\u4f8b\u5982\uff0c\u4f60\u5728\u4e00\u6b21\u91cd\u8981\u8003\u8bd5\u4e2d\u6240\u505a\u7684\u7b14\u8bb0\u5c06\u4e0e\u4f60\u5728\u4f11\u95f2\u9605\u8bfb\u4e2d\u6240\u505a\u7684\u7b14\u8bb0\u5927\u4e0d\u76f8\u540c\u3002\u4f60\u5c06\u5982\u4f55\u5904\u7406\u6355\u83b7\u7684\u4fe1\u606f\u5219\u662f\u53e6\u4e00\u56de\u4e8b\u3002\n\n#### \u4e3a\u4ec0\u4e48\u662f\u62bd\u8ba4\u5361\uff1f\n\n\u518d\u770b\u770b\u4e0a\u8868\u3002\u62bd\u8ba4\u5361\u7efc\u5408\u8fd0\u7528\u4e86**\u7ec3\u4e60\u6d4b\u8bd5**(\u9ad8\u6548)\u3001**\u5206\u5e03\u7ec3\u4e60**(\u9ad8\u6548)\u548c\u4ea4\u53c9\u7ec3\u4e60(\u4e2d\u6548)\u7b49\u5b66\u4e60\u7b56\u7565\uff0c\u5373\u8fd9\u4e9b\u7b56\u7565\u7684\u6700\u4f73\u5b9e\u73b0\u65b9\u5f0f\u662f\u901a\u8fc7\u62bd\u8ba4\u5361\uff1b\u4f7f\u7528\u62bd\u8ba4\u5361\u7684\u6700\u4f73\u65b9\u5f0f\u662f\u2026\u2026\u4f60\u731c\u5bf9\u4e86\uff0c\u662f\u901a\u8fc7 SRS (SuperMemo\/Anki)\u3002\n\n#### \u5728\u7b14\u8bb0\u7cfb\u7edf\u4e2d\u8fdb\u884c\u77e5\u8bc6\u7ba1\u7406\u662f\u767d\u8d39\u529f\u592b\n\n\u5728\u4f7f\u7528 SuperMemo \u4e4b\u524d\uff0c\u6211\u4f7f\u7528\u7684\u662f OneNote\u3002\u6211\u6709\u6587\u4ef6\u5939\u3001\u7ae0\u8282\u3001\u7b14\u8bb0\uff0c\u6709\u7ec4\u7ec7\uff0c\u6709\u6807\u8bb0\u3002\u8fd9\u662f\u6211 2016 \u5e74 OneNote \u7684\u622a\u56fe\u3002\u8fd9\u662f\u6211\u4e3a\u300a[\u8ba4\u77e5\u5929\u6027![](https:\/\/img.kancloud.cn\/59\/55\/595584352c755a01a25fe63d6268d569.svg)](https:\/\/www.amazon.com\/Make-Stick-Science-Successful-Learning\/dp\/0674729013)\u300b\u505a\u7684\u7b14\u8bb0\uff1a\n\n:-: ![](https:\/\/img.kancloud.cn\/c1\/61\/c161f0b352d9b0f2032f58194199e9f3_720x701.jpg)\n\n\u8bda\u7136\uff0cOneNote (\u6216 Evernote) \u6709\u8bb8\u591a SuperMemo \u6ca1\u6709\u7684\u529f\u80fd\uff1a\u540c\u6b65\u3001\u5185\u7f6e OCR\u3001\u73b0\u4ee3\u7f8e\u89c2\u7684 UI \u8bbe\u8ba1\u548c\u754c\u9762\u3001\u79fb\u52a8\u7248\u672c\u53ef\u4ee5\u201c\u968f\u65f6\u968f\u5730\u67e5\u627e\u548c\u67e5\u770b\u201d\u3002\n\n\u7b14\u8bb0\u7cfb\u7edf\u4e2d\u56fa\u7136\u53ef\u4ee5\u7ed9\u4f60\u5e72\u51c0\u3001\u8be6\u5c3d\u3001\u7ec6\u81f4\u5206\u7c7b\u3001\u53ef\u5373\u65f6\u641c\u7d22\u3001\u6807\u7b7e\u52a0\u597d\u7684\u3001\u7ec4\u7ec7\u6709\u5e8f\u7684\u7b14\u8bb0\uff0c\u5e76\u53ef\u5728 5 \u53f0\u8bbe\u5907\u4e0a\u540c\u6b65\u3002\u7136\u800c\uff0c\u8fd9\u4e9b\u7b14\u8bb0\u51e0\u4e4e\u6beb\u65e0\u7528\u5904\uff0c\u56e0\u4e3a\u6700\u5173\u952e\u8981\u7d20\u7f3a\u5931\u4e86\uff0c\u5373\u95f4\u9694\u68c0\u7d22\u7ec3\u4e60(\u4e0a\u9762\u8ba8\u8bba\u7684\u4e09\u70b9)\uff0c\u5b83\u3002\u6240\u6709\u8fd9\u4e9b\u90fd\u53ea\u662f\u82b1\u91cc\u80e1\u54e8\uff0c\u56e0\u4e3a**\u91cd\u8981\u7684\u662f\u4f60\u5982\u4f55\u5904\u7406\u8fd9\u4e9b\u4fe1\u606f**\u3002\n\n\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf\u90fd\u53ea\u662f\u4e00\u5806\u53ef\u4f9b\u4e66\u5199\u7684\u7a7a\u767d\u7535\u5b50\u7eb8\u3002\u4ed6\u4eec\u672c\u8d28\u4e0a\u6ca1\u6709\u4fc3\u8fdb\u5b66\u4e60\u7684\u529f\u80fd\uff1a\u4e3b\u52a8\u56de\u5fc6\uff0c\u5206\u5e03\u7ec3\u4e60(\u5b89\u6392\u7a0d\u540e\u590d\u4e60)\uff0c\u4e0e\u50a8\u5b58\u4fe1\u606f\u4ea4\u4e92\u7684\u53cd\u9988\u7cfb\u7edf\u3002\u5982\u679c\u6ca1\u6709\u4e0e\u77e5\u8bc6\u7cfb\u7edf\u7684\u4e30\u5bcc\u4ea4\u4e92\uff0c\u4f60\u6216\u591a\u6216\u5c11\u5c31\u53ea\u662f\u4e3a\u5404\u79cd\u4fe1\u606f\u7f16\u5236\u7d22\u5f15\u7684\u4eba\u7c7b\u8c37\u6b4c\uff0c\u800c\u8fd9\u4e9b\u4fe1\u606f\u5e76\u975e\u77e5\u8bc6\u3002\n\n> \u4f60\u5728\u62a8\u51fb\u4efb\u4f55\u4e0d\u662f SuperMemo \u7684\u7b14\u8bb0\u7cfb\u7edf\u3002\n\n\u6211\u8ba4\u4e3a\u5b83\u4eec\u90fd\u5c5e\u4e8e\u540c\u4e00\u4e2a\u7c7b\u522b (\u5b66\u4e60\u5de5\u5177)\uff0c\u6240\u4ee5\u8fd9\u79cd\u6bd4\u8f83\u5e76\u4e0d\u662f\u8d8a\u754c\u7684 (\u81f3\u5c11\u5728\u6211\u770b\u6765\u662f\u8fd9\u6837)\u3002SuperMemo \u4e0d\u4ec5\u4ec5\u662f\u7b14\u8bb0\u7cfb\u7edf\uff0c\u5c3d\u7ba1\u5982\u6b64\uff0c\u5b83\u4e5f\u662f\u7b14\u8bb0\u7cfb\u7edf\u3002\u6b64\u5916\uff0c\u5982\u679c\u6709\u4e00\u4e2a\u6700\u597d\u7684\u5b66\u4e60\u7b56\u7565 (\u8fd9\u91cc\u6709)\uff0c\u90a3\u4e48\u4efb\u4f55\u4e0d\u662f\u8fd9\u6837\u7684\u7b56\u7565\u90fd\u662f\u6b21\u4f18\u7684\u3002\u8bf7\u56de\u8fc7\u5934\u6765\u53c2\u8003\u4e0a\u9762\u7684\u5b9e\u7528\u65b9\u6cd5\u8bc4\u4f30\u8868\uff1a\n\nSuperMemo:\n\n\u7ec3\u4e60\u6d4b\u8bd5: \u2714\n\n\u5206\u5e03\u7ec3\u4e60: \u2714\n\n\u4ea4\u53c9\u7ec3\u4e60: \u2714\n\n\u53ea\u6709\u4e24\u79cd\u6280\u672f\u88ab\u8bc4\u4e3a\u9ad8\u5206\uff0cSuperMemo (\u6216 Anki \u5c31\u8fd9\u4e00\u70b9\u800c\u8a00)\u62e5\u6709\u8fd9\u4e00\u70b9\u3002\n\n## \u7ed3\u675f\u8bed\n\n\u81f3\u6b64\uff0c\u6211\u610f\u8bc6\u5230\u8fd9\u6b21\u8ba8\u8bba\u4f53\u73b0\u4e86\u6211\u4eec\u5bf9\u5b66\u4e60\u7684\u4e0d\u540c\u4fe1\u5ff5\uff0c\u8fd9\u4f53\u73b0\u5728\u6211\u4eec\u4f7f\u7528\u7684\u5de5\u5177\u4e2d\uff1a\n\n\u7b14\u8bb0\u7cfb\u7edf\uff1a\u4ece\u539f\u59cb\u6750\u6599\u4e2d\u6458\u8981\u548c\u9ad8\u4eae\uff1b\u201c\u5076\u5c14\u201d\u6216\u201c\u7ecf\u5e38\u201d\u91cd\u65b0\u9605\u8bfb\u3002\n\n\u95f4\u9694\u590d\u4e60\u8f6f\u4ef6 (SuperMemo\/Anki)\uff1a\u68c0\u7d22\u7ec3\u4e60 (\u4e3b\u52a8\u56de\u5fc6)\u3001\u5206\u5e03\u7ec3\u4e60\u3001\u4ea4\u53c9\u7ec3\u4e60\n\n\u6211\u4e0d\u662f\u5728\u62a8\u51fb\u4efb\u4f55\u7279\u5b9a\u7684\u7b14\u8bb0\u7cfb\u7edf (OneNote \u6216 Evernote)\u3002\u76f4\u622a\u4e86\u5f53\u5730\u8bf4\uff0c\u6211\u5728\u62a8\u51fb\u6240\u6709\u7684\u7b14\u8bb0\u7cfb\u7edf\u3002\u53ea\u662f\u505a\u7b14\u8bb0\u7684\u201c\u6807\u51c6\u505a\u6cd5\u201d\u6ca1\u6709\u7528\uff0c\u4e5f\u6ca1\u6709\u6548\u679c\u3002\u63a8\u800c\u5e7f\u4e4b\uff0c\u652f\u6301\u8fd9\u4e00\u76ee\u6807\u7684\u7cfb\u7edf\u4e5f\u4e0d\u662f\u5f88\u6709\u7528\u548c\u6709\u6548\u3002\u6362\u53e5\u8bdd\u8bf4\uff0cSuperMemo \u5f7b\u5e95\u6539\u53d8\u4e86\u6211\u601d\u8003\u5b66\u4e60\u3001\u4fe1\u606f\u548c\u77e5\u8bc6\u7684\u65b9\u5f0f\uff0c\u4ee5\u81f3\u4e8e\u73b0\u5728\u6211\u8ba4\u4e3a\u4efb\u4f55\u7b14\u8bb0\u7cfb\u7edf (OneNote \u6216 Evernote) \u90fd\u51e0\u4e4e\u6beb\u65e0\u7528\u5904\u3002"},
+        "summary":[{"id":2451105,"pid":0,"name":"Introduction.md","title":"\u5bfc\u8bfb","is_probation":0,"ref":"Introduction.md","path":"2451105","index":0},{"id":2450636,"pid":0,"name":"\u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48\/README.md","title":"\u7b2c 0 \u7ae0 \u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48","is_probation":0,"ref":"\u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48\/README.md","path":"2450636","index":1,"articles":[{"id":2450556,"pid":2450636,"name":"\u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48\/\u9ad8\u4e2d\u751f\u89c6\u89d2.md","title":"\u9ad8\u4e2d\u751f\u89c6\u89d2","is_probation":0,"ref":"\u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48\/\u9ad8\u4e2d\u751f\u89c6\u89d2.md","path":"2450556","index":2},{"id":2450558,"pid":2450636,"name":"\u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48\/\u5fc3\u7406\u5b66\u89c6\u89d2.md","title":"\u5fc3\u7406\u5b66\u89c6\u89d2","is_probation":0,"ref":"\u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48\/\u5fc3\u7406\u5b66\u89c6\u89d2.md","path":"2450558","index":3},{"id":2450557,"pid":2450636,"name":"\u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48\/\u7a0b\u5e8f\u5458\u89c6\u89d2.md","title":"\u7a0b\u5e8f\u5458\u89c6\u89d2","is_probation":0,"ref":"\u6e10\u8fdb\u5b66\u4e60\u662f\u4ec0\u4e48\/\u7a0b\u5e8f\u5458\u89c6\u89d2.md","path":"2450557","index":4}]},{"id":2450637,"pid":0,"name":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/README.md","title":"\u7b2c 1 \u7ae0 \u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60","is_probation":0,"ref":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/README.md","path":"2450637","index":5,"articles":[{"id":2450560,"pid":2450637,"name":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/AnkiToSuperMemo.md","title":"\u6211\u4ece Anki \u8f6c\u5411 SuperMemo","is_probation":0,"ref":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/AnkiToSuperMemo.md","path":"2450560","index":6},{"id":2450561,"pid":2450637,"name":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/NoteToSuperMemo.md","title":"SuperMemo \u6bd4\u4f20\u7edf\u7b14\u8bb0\u5f3a\u5728\u54ea","is_probation":0,"ref":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/NoteToSuperMemo.md","path":"2450561","index":7},{"id":2450562,"pid":2450637,"name":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/SuperMemo\u89e3\u51b3\u4e86\u54ea\u4e9b\u95ee\u9898.md","title":"SuperMemo \u89e3\u51b3\u4e86\u54ea\u4e9b\u95ee\u9898","is_probation":0,"ref":"\u4e3a\u4ec0\u4e48\u6e10\u8fdb\u5b66\u4e60\/SuperMemo\u89e3\u51b3\u4e86\u54ea\u4e9b\u95ee\u9898.md","path":"2450562","index":8}]},{"id":2450638,"pid":0,"name":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/README.md","title":"\u7b2c 2 \u7ae0 \u5165\u95e8\u6e10\u8fdb\u5b66\u4e60","is_probation":0,"ref":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/README.md","path":"2450638","index":9,"articles":[{"id":2450594,"pid":2450638,"name":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u57fa\u672c\u6982\u5ff5\u4e0e\u64cd\u4f5c.md","title":"\u57fa\u672c\u6982\u5ff5\u4e0e\u64cd\u4f5c","is_probation":0,"ref":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u57fa\u672c\u6982\u5ff5\u4e0e\u64cd\u4f5c.md","path":"2450594","index":10},{"id":2450595,"pid":2450638,"name":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u5bfc\u5165\u6750\u6599.md","title":"\u5bfc\u5165\u6750\u6599","is_probation":0,"ref":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u5bfc\u5165\u6750\u6599.md","path":"2450595","index":11},{"id":2450596,"pid":2450638,"name":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u6837\u5f0f\u7edf\u4e00.md","title":"\u6837\u5f0f\u7edf\u4e00","is_probation":0,"ref":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u6837\u5f0f\u7edf\u4e00.md","path":"2450596","index":12},{"id":2450597,"pid":2450638,"name":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u5de5\u4f5c\u6d41.md","title":"\u5de5\u4f5c\u6d41","is_probation":0,"ref":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u5de5\u4f5c\u6d41.md","path":"2450597","index":13},{"id":2453522,"pid":2450638,"name":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u505a\u597d\u5907\u4efd.md","title":"\u505a\u597d\u5907\u4efd","is_probation":0,"ref":"\u5165\u95e8\u6e10\u8fdb\u5b66\u4e60\/\u505a\u597d\u5907\u4efd.md","path":"2453522","index":14}]},{"id":2450639,"pid":0,"name":"\u66f4\u8fdb\u4e00\u6b65\/README.md","title":"\u7b2c 3 \u7ae0 \u66f4\u8fdb\u4e00\u6b65","is_probation":0,"ref":"\u66f4\u8fdb\u4e00\u6b65\/README.md","path":"2450639","index":15,"articles":[{"id":2450600,"pid":2450639,"name":"\u66f4\u8fdb\u4e00\u6b65\/\u9009\u62e9\u5b66\u4e60\u6750\u6599.md","title":"\u9009\u62e9\u5b66\u4e60\u6750\u6599","is_probation":0,"ref":"\u66f4\u8fdb\u4e00\u6b65\/\u9009\u62e9\u5b66\u4e60\u6750\u6599.md","path":"2450600","index":16},{"id":2450601,"pid":2450639,"name":"\u66f4\u8fdb\u4e00\u6b65\/\u6e10\u8fdb\u6458\u5f55\u5904\u7406.md","title":"\u6e10\u8fdb\u6458\u5f55\u5904\u7406","is_probation":0,"ref":"\u66f4\u8fdb\u4e00\u6b65\/\u6e10\u8fdb\u6458\u5f55\u5904\u7406.md","path":"2450601","index":17},{"id":2450602,"pid":2450639,"name":"\u66f4\u8fdb\u4e00\u6b65\/\u5143\u8bb0\u5fc6\u5224\u65ad.md","title":"\u5143\u8bb0\u5fc6\u5224\u65ad","is_probation":0,"ref":"\u66f4\u8fdb\u4e00\u6b65\/\u5143\u8bb0\u5fc6\u5224\u65ad.md","path":"2450602","index":18},{"id":2450603,"pid":2450639,"name":"\u66f4\u8fdb\u4e00\u6b65\/\u6982\u5ff5\u7ec4\u6700\u4f73\u5b9e\u8df5.md","title":"\u6982\u5ff5\u7ec4\u6700\u4f73\u5b9e\u8df5","is_probation":0,"ref":"\u66f4\u8fdb\u4e00\u6b65\/\u6982\u5ff5\u7ec4\u6700\u4f73\u5b9e\u8df5.md","path":"2450603","index":19},{"id":2450604,"pid":2450639,"name":"\u66f4\u8fdb\u4e00\u6b65\/\u62e5\u62b1\u4f18\u5148\u7ea7.md","title":"\u62e5\u62b1\u4f18\u5148\u7ea7","is_probation":0,"ref":"\u66f4\u8fdb\u4e00\u6b65\/\u62e5\u62b1\u4f18\u5148\u7ea7.md","path":"2450604","index":20},{"id":2450605,"pid":2450639,"name":"\u66f4\u8fdb\u4e00\u6b65\/\u77e5\u8bc6\u6811\u4e0e\u795e\u7ecf\u590d\u4e60.md","title":"\u77e5\u8bc6\u6811\u4e0e\u795e\u7ecf\u590d\u4e60","is_probation":0,"ref":"\u66f4\u8fdb\u4e00\u6b65\/\u77e5\u8bc6\u6811\u4e0e\u795e\u7ecf\u590d\u4e60.md","path":"2450605","index":21},{"id":2450606,"pid":2450639,"name":"\u66f4\u8fdb\u4e00\u6b65\/\u6982\u5ff5\u94fe\u63a5\u4e0e\u6e10\u8fdb\u5199\u4f5c.md","title":"\u6982\u5ff5\u94fe\u63a5\u4e0e\u6e10\u8fdb\u5199\u4f5c","is_probation":0,"ref":"\u66f4\u8fdb\u4e00\u6b65\/\u6982\u5ff5\u94fe\u63a5\u4e0e\u6e10\u8fdb\u5199\u4f5c.md","path":"2450606","index":22}]},{"id":2450640,"pid":0,"name":"\u5947\u6deb\u5de7\u6280\/README.md","title":"\u7b2c 4 \u7ae0 \u5947\u6deb\u5de7\u6280","is_probation":0,"ref":"\u5947\u6deb\u5de7\u6280\/README.md","path":"2450640","index":23,"articles":[{"id":2450608,"pid":2450640,"name":"\u5947\u6deb\u5de7\u6280\/QuickerMemo.md","title":"QuickerMemo","is_probation":0,"ref":"\u5947\u6deb\u5de7\u6280\/QuickerMemo.md","path":"2450608","index":24},{"id":2450609,"pid":2450640,"name":"\u5947\u6deb\u5de7\u6280\/\u77e5\u8bc6\u6811\u8f6c\u601d\u7ef4\u5bfc\u56fe.md","title":"\u77e5\u8bc6\u6811\u8f6c\u601d\u7ef4\u5bfc\u56fe","is_probation":0,"ref":"\u5947\u6deb\u5de7\u6280\/\u77e5\u8bc6\u6811\u8f6c\u601d\u7ef4\u5bfc\u56fe.md","path":"2450609","index":25},{"id":2450610,"pid":2450640,"name":"\u5947\u6deb\u5de7\u6280\/\u56fe\u7247\u906e\u6321\u6559\u7a0b.md","title":"\u56fe\u7247\u906e\u6321\u6559\u7a0b","is_probation":0,"ref":"\u5947\u6deb\u5de7\u6280\/\u56fe\u7247\u906e\u6321\u6559\u7a0b.md","path":"2450610","index":26}]},{"id":2454059,"pid":0,"name":"\u5236\u5361\u539f\u5219\/README.md","title":"\u7b2c 5 \u7ae0 \u5236\u5361\u539f\u5219","is_probation":0,"ref":"\u5236\u5361\u539f\u5219\/README.md","path":"2454059","index":27,"articles":[{"id":2454060,"pid":2454059,"name":"\u5236\u5361\u539f\u5219\/20\u539f\u5219\u672c\u571f\u7248.md","title":"20 \u539f\u5219\u672c\u571f\u7248","is_probation":0,"ref":"\u5236\u5361\u539f\u5219\/20\u539f\u5219\u672c\u571f\u7248.md","path":"2454060","index":28},{"id":2454061,"pid":2454059,"name":"\u5236\u5361\u539f\u5219\/20\u539f\u521920\u5468\u5e74\u7248.md","title":"20 \u539f\u5219 20 \u5468\u5e74\u7248","is_probation":0,"ref":"\u5236\u5361\u539f\u5219\/20\u539f\u521920\u5468\u5e74\u7248.md","path":"2454061","index":29},{"id":2454062,"pid":2454059,"name":"\u5236\u5361\u539f\u5219\/20\u539f\u5219\u5b66\u672f\u7248.md","title":"20 \u539f\u5219\u5b66\u672f\u7248","is_probation":0,"ref":"\u5236\u5361\u539f\u5219\/20\u539f\u5219\u5b66\u672f\u7248.md","path":"2454062","index":30}]},{"id":2451106,"pid":0,"name":"Epilog.md","title":"\u7ed3\u8bed","is_probation":0,"ref":"Epilog.md","path":"2451106","index":31}]
+    }
+</script>
+<script type="text/javascript" src="/asset/reader.js?version=ed38795423544aa3e336"></script>
+<script type="text/javascript">
+        if (self === top) {
+        kancloud.bootstrap();
+    }
+    </script>
+<script src="https://www.topthink.com/assistant/js" async></script>
+<script type="text/javascript">
+    document.addEventListener('tas:ready',function() {
+        window.tas.init('zPdyXwbQ', {
+            appearance: {
+                button: {
+                    hidden: true
+                }
+            },
+            chat: {
+                enable: false,
+            },
+            robot: {
+                enable: false,
+            },
+            broadcast: {
+                enable: false,
+            },
+            doc: {
+                enable: false
+            },
+            feedback: null,
+            scripts: null
+        })
+    });
+</script>
+</body>
+</html>
