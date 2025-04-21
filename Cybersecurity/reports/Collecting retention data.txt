@@ -1,12 +1,12 @@
 SuperMemo Report
    Activity: Collecting retention data
    Collection: c:\sec-supermemo-backup\cybersecurity
-   Date: 2025年4月20日, 0:12:54
+   Date: Monday, April 21, 2025, 11:25:28 AM
    SuperMemo 19 (Build 19.08, Jan 6, 2025)
 
 Retention data errors can be ignored
 
-Process completed at 0:12:54 in 00:00:00 sec (2025年4月20日)
+Process completed at 11:25:28 AM in 00:00:00 sec (Monday, April 21, 2025)
 
 NO ERRORS (Collecting retention data)
 
